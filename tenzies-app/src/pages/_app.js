@@ -17,11 +17,18 @@ export default function App() {
 
   const diceElements = dice.map(die => <Die value={die} />)  
 
+  function rollDice() {
+    setDice(allNewDice())
+  }
+
   return (
     <main>
       <div className='dice-container'>
         {diceElements}
       </div>
+
+      <button className='roll-dice' onClick={rollDice}>Roll</button>
+      
     </main>
   )
 }
