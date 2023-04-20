@@ -7,6 +7,14 @@ export default function App() {
 
   const [dice, setDice] = useState(allNewDice());
 
+  function generateNewDie() {
+    return {
+      value: Math.ceil(Math.random() * 6),
+      isHeld: false,
+      id: nanoid()
+    }
+  }
+
   function allNewDice() {
 
     const newDice = [];
@@ -36,7 +44,11 @@ export default function App() {
                                         />)  
 
   function rollDice() {
-    setDice(allNewDice())
+    setDice(oldDice => oldDice.map(die => {
+        return die.isHeld ? 
+        die :
+        generateNewDie()
+    }))
   }
 
   return (
