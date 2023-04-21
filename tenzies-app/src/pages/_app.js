@@ -3,6 +3,8 @@ import Die from './components/Die'
 import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
+import { useStopwatch } from 'react-timer-hook';
+
 
 export default function App() {
 
@@ -46,6 +48,18 @@ export default function App() {
           die
     }))
   }
+
+  const {
+    seconds,
+    minutes,
+    hours,
+    days,
+    isRunning,
+    start,
+    pause,
+    reset,
+  } = useStopwatch({ autoStart: true });
+
 
   const diceElements = dice.map(die => <Die 
                                         key={die.id} 
