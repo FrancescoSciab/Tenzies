@@ -1,4 +1,4 @@
-import { useState } from "react"
+
 
 export default function Die (props) {
     const styles = {

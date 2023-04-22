@@ -8,6 +8,9 @@ export default function App() {
 
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
+  const [t0, setT0] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  
 
   useEffect(() => {
     const allHeld = dice.every(die => die.isHeld)
@@ -15,6 +18,7 @@ export default function App() {
     const allSameValue = dice.every(die => die.value === firstValue)
     if (allHeld && allSameValue) {
       setTenzies(true)
+      setElapsedTime((Date.now() - t0) / 1000)
     }
   }, [dice])
 
@@ -27,7 +31,6 @@ export default function App() {
   }
 
   function allNewDice() {
-
     const newDice = [];
     for (let i = 0; i < 10; i++) {
       newDice.push({
@@ -40,11 +43,15 @@ export default function App() {
   }
 
   function holdDice(id) {
+    if (t0 === 0){//to not trigger every onClick event
+      setT0(Date.now())
+    }
     setDice(oldDice => oldDice.map(die => {
       return die.id === id ?
           {...die, isHeld: !die.isHeld} :
           die
     }))
+    
   }
 
   const diceElements = dice.map(die => <Die 
@@ -55,6 +62,7 @@ export default function App() {
                                         />)  
 
   function rollDice() {
+    t0;
     if (!tenzies) {
         setDice(oldDice => oldDice.map(die => {
         return die.isHeld ? 
@@ -77,6 +85,8 @@ export default function App() {
       </div>
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
+
+      {tenzies && <p>{Math.floor(elapsedTime)} seconds</p>}
       
     </main>
   )
