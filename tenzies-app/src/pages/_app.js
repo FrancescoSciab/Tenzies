@@ -1,6 +1,5 @@
 import '@/styles/globals.css'
 import Die from './components/Die'
-import TimeTracker from './components/TimeTracker';
 import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
@@ -12,22 +11,19 @@ export default function App() {
 
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
-  const [time, setTime] = useState(() => {
-    return () => {
-        performance.now()
-    }
-})
+  const [t0, setT0] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  
   useEffect(() => {
     const allHeld = dice.every(die => die.isHeld)
     const firstValue = dice[0].value
     const allSameValue = dice.every(die => die.value === firstValue)
     if (allHeld && allSameValue) {() => {
       setTenzies(true)
-      setTime()
+      setElapsedTime((Date.now() - t0) / 1000)
+      }
     }
-
-    }
-    }, [dice])
+  }, [dice])
 
   function generateNewDie() {
     return {
@@ -38,7 +34,6 @@ export default function App() {
   }
 
   function allNewDice() {
-
     const newDice = [];
     for (let i = 0; i < 10; i++) {
       newDice.push({
@@ -51,11 +46,15 @@ export default function App() {
   }
 
   function holdDice(id) {
+    if (t0 === 0){//to not trigger every onClick event
+      setT0(Date.now())
+    }
     setDice(oldDice => oldDice.map(die => {
       return die.id === id ?
           {...die, isHeld: !die.isHeld} :
           die
     }))
+    
   }
 
   const diceElements = dice.map(die => <Die 
@@ -89,7 +88,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      <TimeTracker />
+      {tenzies && <p>{Math.floor(elapsedTime)} seconds</p>}
       
     </main>
   )
