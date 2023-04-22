@@ -1,24 +1,33 @@
 import '@/styles/globals.css'
 import Die from './components/Die'
+import TimeTracker from './components/TimeTracker';
 import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
-import { useStopwatch } from 'react-timer-hook';
+
+
 
 
 export default function App() {
 
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
-
+  const [time, setTime] = useState(() => {
+    return () => {
+        performance.now()
+    }
+})
   useEffect(() => {
     const allHeld = dice.every(die => die.isHeld)
     const firstValue = dice[0].value
     const allSameValue = dice.every(die => die.value === firstValue)
-    if (allHeld && allSameValue) {
+    if (allHeld && allSameValue) {() => {
       setTenzies(true)
+      setTime()
     }
-  }, [dice])
+
+    }
+    }, [dice])
 
   function generateNewDie() {
     return {
@@ -48,18 +57,6 @@ export default function App() {
           die
     }))
   }
-
-  const {
-    seconds,
-    minutes,
-    hours,
-    days,
-    isRunning,
-    start,
-    pause,
-    reset,
-  } = useStopwatch({ autoStart: true });
-
 
   const diceElements = dice.map(die => <Die 
                                         key={die.id} 
@@ -91,6 +88,8 @@ export default function App() {
       </div>
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
+
+      <TimeTracker />
       
     </main>
   )
