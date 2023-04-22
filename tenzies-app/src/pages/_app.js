@@ -4,9 +4,6 @@ import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
 
-
-
-
 export default function App() {
 
   const [dice, setDice] = useState(allNewDice());
@@ -14,14 +11,14 @@ export default function App() {
   const [t0, setT0] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   
+
   useEffect(() => {
     const allHeld = dice.every(die => die.isHeld)
     const firstValue = dice[0].value
     const allSameValue = dice.every(die => die.value === firstValue)
-    if (allHeld && allSameValue) {() => {
+    if (allHeld && allSameValue) {
       setTenzies(true)
       setElapsedTime((Date.now() - t0) / 1000)
-      }
     }
   }, [dice])
 
@@ -65,6 +62,7 @@ export default function App() {
                                         />)  
 
   function rollDice() {
+    t0;
     if (!tenzies) {
         setDice(oldDice => oldDice.map(die => {
         return die.isHeld ? 
