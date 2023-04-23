@@ -1,5 +1,6 @@
 import '@/styles/globals.css'
 import Die from './components/Die'
+import Data from './components/Data'
 import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
@@ -15,7 +16,7 @@ export default function App() {
       setT0(Date.now())
     }
   }
-  
+
   const [elapsedTime, setElapsedTime] = useState(0);
   
 
@@ -64,6 +65,7 @@ export default function App() {
                                         isHeld={die.isHeld}
                                         holdDice={() => holdDice(die.id)} 
                                         initialTime={startTime()}
+                                        elapsedTime={elapsedTime}
                                         />)  
 
   function rollDice() {
@@ -90,7 +92,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <p>{Math.floor(elapsedTime)} seconds</p>}
+      {tenzies && <Data />}
       
     </main>
   )
