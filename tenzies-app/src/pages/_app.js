@@ -10,11 +10,11 @@ export default function App() {
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
 
-  const [t0, setT0] = useState(0);
+  let t0 = 0
   function startTime() {
-    //to not trigger every onClick event
-      setT0(Date.now())
+    return t0 = Date.now()
   }
+  
   
   const [elapsedTime, setElapsedTime] = useState(0);
   
@@ -63,7 +63,7 @@ export default function App() {
                                         value={die.value} 
                                         isHeld={die.isHeld}
                                         holdDice={() => holdDice(die.id)} 
-                                        initialTime={() => startTime()}
+                                        initialTime={() => setT0(Date.now())}
                                         />)  
 
   function rollDice() {
@@ -90,7 +90,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <Data t0={t0} elapsedTime={elapsedTime} />}
+      {tenzies && <Data t0={startTime()} elapsedTime={elapsedTime} />}
       
     </main>
   )

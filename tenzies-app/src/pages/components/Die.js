@@ -8,7 +8,7 @@ export default function Die (props) {
 
     function time() {
         if (props.t0 === 0) {
-            props.startTime()
+            props.initialTime
         }
     }
 
