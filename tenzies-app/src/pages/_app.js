@@ -10,27 +10,23 @@ export default function App() {
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
 
-  
+  const [t0, setT0] = useState(0);
   function startTime() {
-    const [t0, setT0] = useState(Date.now());
+    if (t0 === 0){//to not trigger every onClick event
+      return setT0(Date.now())
+    }
   }
-
+  
   const [elapsedTime, setElapsedTime] = useState(0);
-  function stopTime() {
-    setElapsedTime((Date.now - startTime()) / 1000)
-  }
-  
-  
-
   
 
   useEffect(() => {
     const allHeld = dice.every(die => die.isHeld)
     const firstValue = dice[0].value
     const allSameValue = dice.every(die => die.value === firstValue)
-    if (allHeld && allSameValue) { 
+    if (allHeld && allSameValue) {
       setTenzies(true)
-      stopTime
+      setElapsedTime((Date.now() - t0) / 1000)
     }
   }, [dice])
 
@@ -67,7 +63,7 @@ export default function App() {
                                         key={die.id} 
                                         value={die.value} 
                                         isHeld={die.isHeld}
-                                        holdDice={() => holdDice(die.id)}
+                                        holdDice={() => holdDice(die.id)} 
                                         />)  
 
   function rollDice() {
@@ -94,7 +90,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <Data t0={startTime()} elapsedTime={stopTime()} />}
+      {tenzies && <Data elapsedTime={elapsedTime}/>}
       
     </main>
   )

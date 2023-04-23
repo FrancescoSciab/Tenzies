@@ -12,7 +12,7 @@ export default function Die (props) {
             style={styles}
             onClick={() =>  {
                 props.holdDice();
-                props.startTime
+                props.startTime()
             }
         }
             >
