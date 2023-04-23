@@ -10,10 +10,15 @@ export default function App() {
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
 
-  const [t0, setT0] = useState(0);
   
+  function startTime() {
+    const [t0, setT0] = useState(Date.now());
+  }
 
   const [elapsedTime, setElapsedTime] = useState(0);
+  function stopTime() {
+    setElapsedTime((Date.now - startTime()) / 1000)
+  }
   
   
 
@@ -25,7 +30,7 @@ export default function App() {
     const allSameValue = dice.every(die => die.value === firstValue)
     if (allHeld && allSameValue) { 
       setTenzies(true)
-      setElapsedTime((Date.now() - t0) / 1000)
+      stopTime
     }
   }, [dice])
 
@@ -89,7 +94,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <Data initialTime={setT0(Date.now())} elapsedTime={setElapsedTime((Date.now() - t0) / 1000)} />}
+      {tenzies && <Data t0={startTime()} elapsedTime={stopTime()} />}
       
     </main>
   )

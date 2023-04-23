@@ -1,8 +1,8 @@
 export default function Data(props) {
-    const seconds = props.elapsedTime;
+    const seconds = Math.floor(props.elapsedTime);
     return(
         <div>
-            <p>You took {Math.floor(seconds)} seconds</p>
+            <p>You took {props.tenzies && seconds} seconds</p>
         </div>
     )
 }
