@@ -8,7 +8,14 @@ export default function App() {
 
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
+
   const [t0, setT0] = useState(0);
+  function startTime() {
+    if (t0 === 0){//to not trigger every onClick event
+      setT0(Date.now())
+    }
+  }
+  
   const [elapsedTime, setElapsedTime] = useState(0);
   
 
@@ -43,9 +50,6 @@ export default function App() {
   }
 
   function holdDice(id) {
-    if (t0 === 0){//to not trigger every onClick event
-      setT0(Date.now())
-    }
     setDice(oldDice => oldDice.map(die => {
       return die.id === id ?
           {...die, isHeld: !die.isHeld} :
@@ -59,10 +63,10 @@ export default function App() {
                                         value={die.value} 
                                         isHeld={die.isHeld}
                                         holdDice={() => holdDice(die.id)} 
+                                        initialTime={startTime()}
                                         />)  
 
   function rollDice() {
-    t0;
     if (!tenzies) {
         setDice(oldDice => oldDice.map(die => {
         return die.isHeld ? 
