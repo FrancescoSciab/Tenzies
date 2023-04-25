@@ -1,6 +1,5 @@
 import '@/styles/globals.css'
 import Die from './components/Die'
-import Data from './components/Data'
 import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
@@ -10,24 +9,13 @@ export default function App() {
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
 
-  let t0 = 0
-  function startTime() {
-    return t0 = Date.now()
+  const [t0, setT0] = useState(null)
+  
+  function handleStart() {
+    setT0(Date.now());
   }
-  
-  
-  const [elapsedTime, setElapsedTime] = useState(0);
-  
 
-  useEffect(() => {
-    const allHeld = dice.every(die => die.isHeld)
-    const firstValue = dice[0].value
-    const allSameValue = dice.every(die => die.value === firstValue)
-    if (allHeld && allSameValue) {
-      setTenzies(true)
-      setElapsedTime((Date.now() - t0) / 1000)
-    }
-  }, [dice])
+  let elapsedTime = 0  
 
   function generateNewDie() {
     return {
@@ -57,13 +45,24 @@ export default function App() {
     }))
     
   }
+  useEffect(() => {
+    const allHeld = dice.every(die => die.isHeld)
+    const firstValue = dice[0].value
+    const allSameValue = dice.every(die => die.value === firstValue)
+    if (allHeld && allSameValue) {
+      setTenzies(true);
+      if (t0 != null) {
+        elapsedTime = ((Date.now() - t0) / 1000);
+      }
+    }
+  }, [dice])
 
   const diceElements = dice.map(die => <Die 
                                         key={die.id} 
                                         value={die.value} 
                                         isHeld={die.isHeld}
-                                        holdDice={() => holdDice(die.id)} 
-                                        initialTime={() => setT0(Date.now())}
+                                        holdDice={() => holdDice(die.id)}
+                                        startTime={handleStart}
                                         />)  
 
   function rollDice() {
@@ -90,7 +89,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <Data t0={startTime()} elapsedTime={elapsedTime} />}
+      {tenzies && <Data elapsedTime={elapsedTime} />}
       
     </main>
   )
