@@ -16,6 +16,7 @@ export default function Die (props) {
             }
         }
             >
+                
 
             <h2 className="die-num">{props.value}</h2>
         </div>
