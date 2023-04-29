@@ -1,33 +1,41 @@
 import '@/styles/globals.css'
 import Die from './components/Die'
 import Data from './components/Data'
-import { useEffect, useState } from 'react';
+import { formatTime } from './components/utils'
+import { useEffect, useState, useRef } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
 
+
 export default function App() {
 
+  const [modalIsOpen, setIsOpen] = useState(false)
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
-  const [timeElapsing, setTimeElapsing] = useState(false)
+  const [gameStarted, setGameStarted] = useState(false)
+  const [time, setTime] = useState(0)
 
-  let t0 = null
-  function startTime() {
-    
-      if (timeElapsing) {
-        return t0 = Date.now()
-      }
-    
-  }
+  useEffect(() => {
+    if (gameStarted) {
+      setTime(new Date().getTime())
+    } else {
+      setTime(prevTime => {
+        return new Date().getTime() - prevTime
+      })
+    }
+  }, [gameStarted])
+  
 
-  
-  
-  let elapsedTime = null;
-  function stopTime() {
-    elapsedTime = (Date.now() - startTime()) /1000
-  }
-  
-  
+  const score = useRef(0);
+  const scoreText = useRef('')
+
+  score.current = time
+  scoreText.current = formatTime(time)
+
+  useEffect(() => {
+    openModal()
+    setGameStarted(false)
+  }, [tenzies])
 
   function generateNewDie() {
     return {
@@ -62,22 +70,29 @@ export default function App() {
     const firstValue = dice[0].value
     const allSameValue = dice.every(die => die.value === firstValue)
     if (allHeld && allSameValue) {
-      setTenzies(true);
-      elapsedTime = (stopTime() - startTime()) / 1000
-      
+      setTenzies(true);      
     }
   }, [dice])
+
+  function openModal() {
+    setIsOpen(true)
+  }
+
+  function closeModal() {
+    setIsOpen(false)
+
+    setTenzies(false)
+    score.current = -1; 
+    scoreText.current = ''
+  }
 
   const diceElements = dice.map(die => <Die 
                                         key={die.id} 
                                         value={die.value} 
                                         isHeld={die.isHeld}
-                                        holdDice={() => {
-                                          holdDice(die.id);
-                                          setTimeElapsing(true)
-                                          startTime();
-                                          }
-                                        }
+                                        holdDice={() => holdDice(die.id)}
+                                        gameStarted={gameStarted}
+                                        setGameStarted={setGameStarted}
                                         />)  
 
   function rollDice() {
@@ -104,7 +119,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <Data elapsedTime={elapsedTime} />}
+      {tenzies && <Data elapsedTime={scoreText.current} />}
       
     </main>
   )
