@@ -1,5 +1,6 @@
 import '@/styles/globals.css'
 import Die from './components/Die'
+import Data from './components/Data'
 import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
@@ -8,14 +9,25 @@ export default function App() {
 
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
+  const [timeElapsing, setTimeElapsing] = useState(false)
 
-  const [t0, setT0] = useState(null)
-  
-  function handleStart() {
-    setT0(Date.now());
+  let t0 = null
+  function startTime() {
+    
+      if (timeElapsing) {
+        return t0 = Date.now()
+      }
+    
   }
 
-  let elapsedTime = 0  
+  
+  
+  let elapsedTime = null;
+  function stopTime() {
+    elapsedTime = (Date.now() - startTime()) /1000
+  }
+  
+  
 
   function generateNewDie() {
     return {
@@ -38,7 +50,7 @@ export default function App() {
   }
 
   function holdDice(id) {
-    setDice(oldDice => oldDice.map(die => {
+    setDice(oldDice => oldDice.map( die => {
       return die.id === id ?
           {...die, isHeld: !die.isHeld} :
           die
@@ -51,9 +63,8 @@ export default function App() {
     const allSameValue = dice.every(die => die.value === firstValue)
     if (allHeld && allSameValue) {
       setTenzies(true);
-      if (t0 != null) {
-        elapsedTime = ((Date.now() - t0) / 1000);
-      }
+      elapsedTime = (stopTime() - startTime()) / 1000
+      
     }
   }, [dice])
 
@@ -61,8 +72,12 @@ export default function App() {
                                         key={die.id} 
                                         value={die.value} 
                                         isHeld={die.isHeld}
-                                        holdDice={() => holdDice(die.id)}
-                                        startTime={handleStart}
+                                        holdDice={() => {
+                                          holdDice(die.id);
+                                          setTimeElapsing(true)
+                                          startTime();
+                                          }
+                                        }
                                         />)  
 
   function rollDice() {
