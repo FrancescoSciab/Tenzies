@@ -8,28 +8,24 @@ import Confetti from "react-confetti"
 
 
 export default function App() {
-
+  
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
   const [gameStarted, setGameStarted] = useState(false)
   const [time, setTime] = useState(0)
 
+  console.log(`fuori = ${time}`)
   useEffect(() => {
-    if (!gameStarted) {
+    if (gameStarted) {
       setTime(Date.now())
+      console.log(`initial Time = ${time}`)
     } else {
       setTime(prevTime => {
-        return (Date.now() - prevTime) / 1000 
+        return Date.now() - prevTime;
       })
     }
   }, [gameStarted])
   
-
-  const score = time
-
-  useEffect(() => {
-    setGameStarted(false)
-  }, [tenzies])
 
   function generateNewDie() {
     return {
@@ -64,7 +60,8 @@ export default function App() {
     const firstValue = dice[0].value
     const allSameValue = dice.every(die => die.value === firstValue)
     if (allHeld && allSameValue) {
-      setTenzies(true);      
+      setTenzies(true);   
+      setGameStarted(false)   
     }
   }, [dice])
 
@@ -104,7 +101,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <Data elapsedTime={score} />}
+      {tenzies && <Data elapsedTime={time} />}
       
     </main>
   )
