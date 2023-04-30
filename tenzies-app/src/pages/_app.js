@@ -35,6 +35,7 @@ export default function App() {
       isHeld: false,
       id: nanoid()
     }
+    
   }
 
   function allNewDice() {
