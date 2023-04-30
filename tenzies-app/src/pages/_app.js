@@ -1,39 +1,33 @@
 import '@/styles/globals.css'
 import Die from './components/Die'
 import Data from './components/Data'
-import { formatTime } from './components/utils'
-import { useEffect, useState, useRef } from 'react';
+
+import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
 
 
 export default function App() {
 
-  const [modalIsOpen, setIsOpen] = useState(false)
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
   const [gameStarted, setGameStarted] = useState(false)
   const [time, setTime] = useState(0)
 
   useEffect(() => {
-    if (gameStarted) {
-      setTime(new Date().getTime())
+    if (!gameStarted) {
+      setTime(Date.now())
     } else {
       setTime(prevTime => {
-        return new Date().getTime() - prevTime
+        return (Date.now() - prevTime) / 1000 
       })
     }
   }, [gameStarted])
   
 
-  const score = useRef(0);
-  const scoreText = useRef('')
-
-  score.current = time
-  scoreText.current = formatTime(time)
+  const score = time
 
   useEffect(() => {
-    openModal()
     setGameStarted(false)
   }, [tenzies])
 
@@ -74,25 +68,16 @@ export default function App() {
     }
   }, [dice])
 
-  function openModal() {
-    setIsOpen(true)
-  }
-
-  function closeModal() {
-    setIsOpen(false)
-
-    setTenzies(false)
-    score.current = -1; 
-    scoreText.current = ''
-  }
 
   const diceElements = dice.map(die => <Die 
                                         key={die.id} 
                                         value={die.value} 
                                         isHeld={die.isHeld}
-                                        holdDice={() => holdDice(die.id)}
-                                        gameStarted={gameStarted}
-                                        setGameStarted={setGameStarted}
+                                        holdDice={() => {
+                                          holdDice(die.id);
+                                          setGameStarted(true);
+                                          }
+                                        }
                                         />)  
 
   function rollDice() {
@@ -119,7 +104,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <Data elapsedTime={scoreText.current} />}
+      {tenzies && <Data elapsedTime={score} />}
       
     </main>
   )
