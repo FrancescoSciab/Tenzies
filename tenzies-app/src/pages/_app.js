@@ -1,7 +1,6 @@
 import '@/styles/globals.css'
 import Die from './components/Die'
 import Data from './components/Data'
-
 import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
@@ -11,14 +10,14 @@ export default function App() {
   
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
+  //for stopwatch feature
   const [gameStarted, setGameStarted] = useState(false)
+  //will contain seconds elapsed
   const [time, setTime] = useState(0)
 
-  console.log(`fuori = ${time}`)
   useEffect(() => {
     if (gameStarted) {
       setTime(Date.now())
-      console.log(`initial Time = ${time}`)
     } else {
       setTime(prevTime => {
         return Date.now() - prevTime;
@@ -70,7 +69,7 @@ export default function App() {
                                         key={die.id} 
                                         value={die.value} 
                                         isHeld={die.isHeld}
-                                        holdDice={() => {
+                                        onClick={() => {
                                           holdDice(die.id);
                                           setGameStarted(true);
                                           }
