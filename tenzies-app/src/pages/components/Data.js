@@ -3,6 +3,8 @@ export default function Data(props) {
     return(
         <div>
             <p>You took {seconds} seconds</p>
+
+            <p>Best time: </p>
         </div>
     )
 }

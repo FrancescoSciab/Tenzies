@@ -13,13 +13,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.description}>
     
-        </div>
-
-          
-          
-        
-
-        
+        </div>        
       </main>
     </>
   )

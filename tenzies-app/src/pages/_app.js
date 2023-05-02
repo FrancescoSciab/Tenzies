@@ -15,6 +15,9 @@ export default function App() {
   //will contain seconds elapsed
   const [time, setTime] = useState(0)
 
+  
+
+  //when to start and stop stopwatch
   useEffect(() => {
     if (gameStarted) {
       setTime(Date.now())
@@ -32,7 +35,6 @@ export default function App() {
       isHeld: false,
       id: nanoid()
     }
-    
   }
 
   function allNewDice() {
@@ -53,8 +55,9 @@ export default function App() {
           {...die, isHeld: !die.isHeld} :
           die
     }))
-    
   }
+
+  //how game finishes and what to do
   useEffect(() => {
     const allHeld = dice.every(die => die.isHeld)
     const firstValue = dice[0].value
@@ -101,7 +104,9 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <Data elapsedTime={time} />}
+      {tenzies && <Data elapsedTime={time}
+                         
+                      />}
       
     </main>
   )
