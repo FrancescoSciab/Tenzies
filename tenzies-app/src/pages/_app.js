@@ -1,33 +1,30 @@
 import '@/styles/globals.css'
 import Die from './components/Die'
+import Data from './components/Data'
 import { useEffect, useState } from 'react';
 import {nanoid} from "nanoid"
 import Confetti from "react-confetti"
 
-export default function App() {
 
+export default function App() {
+  
   const [dice, setDice] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
-
-  const [t0, setT0] = useState(0);
-  function startTime() {
-    if (t0 === 0){//to not trigger every onClick event
-      setT0(Date.now())
-    }
-  }
-  
-  const [elapsedTime, setElapsedTime] = useState(0);
-  
+  //for stopwatch feature
+  const [gameStarted, setGameStarted] = useState(false)
+  //will contain seconds elapsed
+  const [time, setTime] = useState(0)
 
   useEffect(() => {
-    const allHeld = dice.every(die => die.isHeld)
-    const firstValue = dice[0].value
-    const allSameValue = dice.every(die => die.value === firstValue)
-    if (allHeld && allSameValue) {
-      setTenzies(true)
-      setElapsedTime((Date.now() - t0) / 1000)
+    if (gameStarted) {
+      setTime(Date.now())
+    } else {
+      setTime(prevTime => {
+        return Date.now() - prevTime;
+      })
     }
-  }, [dice])
+  }, [gameStarted])
+  
 
   function generateNewDie() {
     return {
@@ -51,20 +48,33 @@ export default function App() {
   }
 
   function holdDice(id) {
-    setDice(oldDice => oldDice.map(die => {
+    setDice(oldDice => oldDice.map( die => {
       return die.id === id ?
           {...die, isHeld: !die.isHeld} :
           die
     }))
     
   }
+  useEffect(() => {
+    const allHeld = dice.every(die => die.isHeld)
+    const firstValue = dice[0].value
+    const allSameValue = dice.every(die => die.value === firstValue)
+    if (allHeld && allSameValue) {
+      setTenzies(true);   
+      setGameStarted(false)   
+    }
+  }, [dice])
+
 
   const diceElements = dice.map(die => <Die 
                                         key={die.id} 
                                         value={die.value} 
                                         isHeld={die.isHeld}
-                                        holdDice={() => holdDice(die.id)} 
-                                        initialTime={startTime()}
+                                        onClick={() => {
+                                          holdDice(die.id);
+                                          setGameStarted(true);
+                                          }
+                                        }
                                         />)  
 
   function rollDice() {
@@ -91,7 +101,7 @@ export default function App() {
 
       <button className='roll-dice' onClick={rollDice}>{tenzies ? "New game" : "Roll"}</button>
 
-      {tenzies && <p>{Math.floor(elapsedTime)} seconds</p>}
+      {tenzies && <Data elapsedTime={time} />}
       
     </main>
   )
